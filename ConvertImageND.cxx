@@ -406,6 +406,7 @@ ImageConverter<TPixel,VDim>
   m_FlagSPM = false;
   m_UseCompression = false;
   m_MultiComponentSplit = false;
+  m_TimeSeriesSplit = false;
   m_Iterations = 0;
   m_LoopType = LOOP_NONE;
   m_PercentIntensityMode = PIM_QUANTILE;
@@ -1386,6 +1387,12 @@ ImageConverter<TPixel, VDim>
     {
     m_MultiComponentSplit = false; return 0;
     }
+  else if (cmd == "-notss" || cmd == "-no-timeseries-split")
+    {
+    assert(m_TimeSeriesSplit == true);
+    std::cout << "Time Series Split turned off" << std::endl;
+    m_TimeSeriesSplit = false; return 0;
+    }
 
   else if (cmd == "-nlw" || cmd == "-normwin" || cmd == "-normalize-local-window")
     {
@@ -2276,6 +2283,13 @@ ImageConverter<TPixel, VDim>
     return 1;
     }
 
+  else if (cmd == "-tss" || cmd == "-timeseries-split")
+    {
+    std::cout << "This is time series split" << std::endl;
+    m_TimeSeriesSplit = true;
+    return 0;
+    }
+
   // Output type specification
   else if (cmd == "-type")
     {
@@ -2448,8 +2462,17 @@ ImageConverter<TPixel, VDim>
       // read it and push in the pipeline.
       if (i != argc-1)
         {
-        ReadImage<TPixel, VDim> adapter(this);
-        adapter(argv[i]);
+        if (m_TimeSeriesSplit)
+          {
+          std::cout << "Reading a Time Series (VDim + 1) Image..." << this << std::endl;
+          ReadImage<TPixel, VDim + 1> adapter(this);
+
+          }
+        else
+          {
+          ReadImage<TPixel, VDim> adapter(this);
+          adapter(argv[i]);
+          }
         }
       else
         {

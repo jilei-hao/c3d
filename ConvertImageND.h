@@ -221,6 +221,9 @@ public:
   // Whether multicomponent images are split on read
   bool m_MultiComponentSplit;
 
+  // Whether time series images are split on read
+  bool m_TimeSeriesSplit;
+
   // Number of iterations for various algorithms
   size_t m_Iterations;
 

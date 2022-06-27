@@ -45,12 +45,19 @@ public:
   ReadImage(Converter *c) : c(c) {}
 
   /**
+   *
+   */
+  typedef ImageConverter<TPixel, VDim - 1> TimeSeriesConverter;
+  ReadImage(TimeSeriesConverter *c) : tsc(c) { std::cout << "[ReadImage] Constructor for Time Series" << std::endl; }
+
+  /**
    * Second parameter is extra information for special IO needs, like DICOM
    */
   void operator() (const char *file, const ImageInfo &info = ImageInfo());
 
 private:
   Converter *c;
+  TimeSeriesConverter *tsc;
 
 };
 
